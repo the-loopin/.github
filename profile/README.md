@@ -35,8 +35,6 @@ Users discover local events, create small groups for those events, approve join 
 * [Appendix A: Suggested Enums](#appendix-a-suggested-enums)
 * [Appendix B: Acceptance Criteria](#appendix-b-acceptance-criteria)
 
-> **Important note:** This document is intentionally written as a practical build plan, not as a long theoretical report. The goal is to help you build a working MVP within one month and still present it as a serious startup-style product.
-
 ---
 
 ## 1. Product Vision
