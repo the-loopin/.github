@@ -1,5 +1,5 @@
 # Loopin: Local Events + Small Group Matching Platform
-## Compressed 2-Week MVP Planning Document
+## 2-Week MVP Planning Document
 
 ### Core Idea
 Users discover local events, create small groups for those events, approve join requests, chat with accepted members, and earn event-specific badges after the event date.
@@ -211,3 +211,65 @@ To hit the 2-week deadline, **AI integration is dropped**.
 ---
 
 ## 13. 2-Week Development Roadmap
+
+### Week 1: Foundation & Core Flow
+* **Day 1-3: Base Architecture** -> Initialize Spring Boot app. Set up security config with JWT filters. Build User and Profile entities/controllers. Verify registration and login flows.
+* **Day 4-5: Discovery & Groups** -> Build Event and EventGroup models. Write basic lookup queries for events. Code the Group creation logic and the Request submission endpoints.
+* **Day 6-7: Request Management** -> Build the endpoints for accepting/rejecting requests. Ensure accepted requesters are successfully piped into the GroupMember table. Connect basic frontend pages for these steps.
+
+### Week 2: Chat, Badges & Polish
+* **Day 8-10: Chat & Background Automation** -> Implement chat tables. Code GET/POST message endpoints. Write the Spring `@Scheduled` task that polls for past dates, flips statuses to completed, and drops records into the UserBadge table. Build the frontend chat container with 3-second interval polling.
+* **Day 11-12: Guardrails & Seed Data** -> Write the local array word filter block. Seed the database via `data.sql` with 5 users, 4 events (some active, one pre-expired for badge testing), and active group configurations.
+* **Day 13-14: Front-to-Back Verification** -> Execute full integration flow runs. Clean up CSS alignment anomalies. Ensure presentation demo runs cleanly end-to-end without server exceptions.
+
+---
+
+## 14. Demo Scenario and Presentation Plan
+
+### 14.1 Seed Data Configuration
+* **Users:** User A (Admin), User B (Joiner), User C (Tester).
+* **Events:** 1 Live Tech Meetup, 1 Past Design Meetup (used to show instant badge generation).
+
+### 14.2 Live Demo Run
+1. Log into the system as User A.
+2. Select the Live Tech Meetup event.
+3. Click **Interested**, write a note, and spawn a group.
+4. Authenticate as User B in a separate browser window.
+5. Search the event, locate User A's group, and click **Join Request**.
+6. Toggle back to User A's view, open the group dashboard, and click **Accept**.
+7. Confirm the Chat engine displays for both users and execute a 2-way message transfer.
+8. Navigate User A to their Profile view to demonstrate the "Group Creator" and "Event Attendee" badges generated via the seed data run.
+
+---
+
+## 15. Startup Roadmap After MVP
+1. **v1.1:** Swap out basic polling for native Spring WebSocket/STOMP execution.
+2. **v1.2:** Integrate external Open-AI or Perspective API content moderation pipelines.
+3. **v2.0:** Build custom organizer tooling dashboards and localized map pins.
+
+---
+
+## 16. Risks and Final Recommendation
+
+| Risk | Mitigation Strategy |
+| :--- | :--- |
+| **WebSockets blow past deadlines** | Handled. WebSockets are dropped; simple short-polling is used instead. |
+| **AI integration breaks or delays** | Handled. AI is removed completely; standard keyword array filtering takes its place. |
+| **Database configuration issues** | Use H2 in-memory profile settings for rapid deployment cycles. |
+
+> **Final Recommendation:** Stick strictly to this structural blueprint. Do not implement notifications, complex design frameworks, or remote APIs. Deliver the core functional flow: Event search -> Group creation -> Approved join -> Live polling chat -> Automatic badge receipt.
+
+---
+
+## Appendix A: Suggested Enums
+* `GroupSizeType`: TWO, THREE, FOUR, FOUR_PLUS
+* `GroupStatus`: OPEN, FULL, ARCHIVED
+* `RequestStatus`: PENDING, ACCEPTED, REJECTED
+* `BadgeType`: EVENT_ATTENDEE, GROUP_CREATOR
+
+---
+
+## Appendix B: Acceptance Criteria
+* **Group Caps:** Groups with size limits (e.g., 3) must shift to `FULL` status and block further request attempts immediately upon hitting their target number.
+* **Chat Access Security:** The chat interface must throw a `403 Forbidden` response if accessed by unauthenticated users or individuals who are not active, accepted group members.
+* **Badge Distribution:** The automated cron execution block must successfully capture past due entries, flag target events as finalized, change group statuses, and populate rows in the user badge table.
