@@ -6,7 +6,7 @@ Users discover local events, create small groups for those events, approve join 
 
 | Field | Decision |
 | :--- | :--- |
-| **Project type** | University final year / semester project with startup potential |
+| **Project type** | MVP |
 | **Current target** | Web application |
 | **Backend requirement** | Java / Spring Boot |
 | **MVP duration** | **2 weeks (14 Days)** |
